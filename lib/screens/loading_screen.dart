@@ -21,13 +21,18 @@ class _LoadingScreenState extends State<LoadingScreen> {
     longitude = location.longitude;
     latitude = location.latitude;
 
+    //Network api call. Using the NetworkHelper class instance in the networking.dart file
     NetworkHelper networkHelper = NetworkHelper(
-        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
+        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey&units=metric');
 
     var weatherData = await networkHelper.getData();
 
+    //this will navigate our app to the location screen automatically
+    //the location screen will take the weather data from the loading screen
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return LocationScreen();
+      return LocationScreen(
+        locationWeather: weatherData,
+      );
     }));
   }
 

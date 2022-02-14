@@ -2,11 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
+  //when the location screen gets initialized, we pass over the location data via
+  //locationWeather
+  LocationScreen({this.locationWeather});
+  final locationWeather;
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
 
 class _LocationScreenState extends State<LocationScreen> {
+  int temperature;
+  int weatherCondition;
+  String cityName;
+  @override
+  void initState() {
+    super.initState();
+    //getting our passed data from the loading screen in the location state widget
+    //this helps us confirm we can access the passed data inside the state widget
+    //through the stateful widget properties (locationWeather)
+    updateUI(widget.locationWeather);
+  }
+
+  void updateUI(dynamic weatherData) {
+    weatherCondition = weatherData['weather'][0]['id'];
+    double temp = weatherData['main']['temp'];
+    temperature = temp.toInt();
+    cityName = weatherData['name'];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +72,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '32°',
+                      '$temperature°',
                       style: kTempTextStyle,
                     ),
                     Text(
@@ -74,8 +97,3 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
-
-/*
-int weatherCondition = weatherData['weather'][0]['id'];
-double temp = weatherData['main']['temp'];
-String city = weatherData['name'];*/
