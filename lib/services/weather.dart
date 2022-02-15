@@ -1,5 +1,6 @@
 import 'package:clima/services/location.dart';
 import 'package:clima/services/networking.dart';
+import 'package:flutter/foundation.dart';
 
 const apiKey = '8c258277bbfd64f54a4b357323f6ce1f';
 const baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
@@ -14,9 +15,14 @@ class WeatherModel {
     //Network api call. Using the NetworkHelper class instance in the networking.dart file
     NetworkHelper networkHelper = NetworkHelper(
         '$baseUrl?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=metric');
-
     var weatherData = await networkHelper.getData();
+    return weatherData;
+  }
 
+  Future<dynamic> getWeatherByCity(String cityName) async {
+    NetworkHelper networkHelper =
+        NetworkHelper('$baseUrl?q=$cityName&appid=$apiKey&units=metric');
+    var weatherData = await networkHelper.getData();
     return weatherData;
   }
 

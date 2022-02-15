@@ -18,6 +18,9 @@ class _LocationScreenState extends State<LocationScreen> {
   String weatherMessage;
   String weatherIcon;
   String cityName;
+  String weatherDescription;
+  int pressure;
+  int humidity;
   @override
   void initState() {
     super.initState();
@@ -34,6 +37,9 @@ class _LocationScreenState extends State<LocationScreen> {
       weatherIcon = 'Error';
       weatherMessage = 'Unable to get weatherData';
       cityName = '';
+      weatherDescription = 'Try again';
+      pressure = 0;
+      humidity = 0;
       return;
     }
     //using setState to update our UI state when the data changes from the api
@@ -49,6 +55,15 @@ class _LocationScreenState extends State<LocationScreen> {
 
       //set cityName
       cityName = weatherData['name'];
+
+      //set weather description
+      weatherDescription = weatherData['weather'][0]['description'];
+
+      //set weather pressure
+      pressure = weatherData['main']['pressure'];
+
+      //set weather humidity
+      humidity = weatherData['main']['humidity'];
     });
   }
 
@@ -84,8 +99,8 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      Navigator.push(
+                    onPressed: () async {
+                      var typeCityName = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) {
@@ -93,6 +108,11 @@ class _LocationScreenState extends State<LocationScreen> {
                           },
                         ),
                       );
+                      if (typeCityName != null) {
+                        var weatherData =
+                            await weather.getWeatherByCity(typeCityName);
+                        updateUI(weatherData);
+                      }
                     },
                     child: Icon(
                       Icons.location_city,
@@ -115,6 +135,33 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ],
                 ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 15),
+                    child: Text(
+                      'Pressure: $pressure Pa',
+                      style: kPressureTextStyle,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 15),
+                    child: Text(
+                      'Humidity: $humidity',
+                      style: kPressureTextStyle,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 15),
+                    child: Text(
+                      'D: $weatherDescription',
+                      style: kPressureTextStyle,
+                    ),
+                  ),
+                ],
               ),
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
